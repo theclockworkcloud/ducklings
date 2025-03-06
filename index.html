@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Fix for iframe issues -->
+    <meta http-equiv="Content-Security-Policy" content="frame-ancestors *">
+    <title>Facilities & Asset Management Assessment</title>
+    <style>
+        :root {
+            --primary: #3a6ea5;
+            --primary-dark: #2a5c8f;
+            --secondary: #ff6b6b;
+            --gray-light: #f5f5f5;
+            --gray: #e0e0e0;
+            --text: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--gray);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(58, 110, 165, 0.2);
+        }
+        
+        .error-message {
+            color: var(--secondary);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .contact-form {
+            background-color: var(--gray-light);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .survey-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--gray);
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        
+        .question-container {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: var(--gray-light);
+        }
+        
+        .question {
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .option:hover {
+            background-color: var(--gray);
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .option-text {
+            flex: 1;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        button:disabled {
+            background-color: var(--gray);
+            cursor: not-allowed;
+        }
+        
+        .back-btn {
+            background-color: var(--gray);
+            color: var(--text);
+        }
+        
+        .back-btn:hover {
+            background-color: #d0d0d0;
+        }
+        
+        .progress-container {
+            margin-bottom: 20px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: var(--gray);
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .result-container {
+            text-align: center;
+            display: none;
+        }
+        
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .recommendations {
+            text-align: left;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: var(--gray-light);
+            border-radius: 8px;
+        }
+        
+        .score-gauge {
+            width: 200px;
+            height: 100px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gauge-bg {
+            width: 200px;
+            height: 100px;
+            border-top-left-radius: 100px;
+            border-top-right-radius: 100px;
+            background-color: var(--gray);
+            position: absolute;
+        }
+        
+        .gauge-fill {
+            width: 200px;
+            height: 100px;
+            border-top-left-radius: 100px;
+            border-top-right-radius: 100px;
+            background-color: #4CAF50;
+            position: absolute;
+            transform-origin: bottom center;
+            transform: rotate(0deg);
+            transition: transform 1s;
+        }
+        
+        .gauge-center {
+            width: 160px;
+            height: 80px;
+            border-top-left-radius: 80px;
+            border-top-right-radius: 80px;
+            background-color: white;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+        }
+        
+        .gauge-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 45px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .survey-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="survey-container">
+            <h1>Facilities & Asset Management Assessment</h1>
+            
+            <div class="progress-container">
+                <div class="progress-text">Progress: <span id="progress-value">0%</span></div>
+                <div class="progress-bar">
+                    <div class="progress" id="progress-bar"></div>
+                </div>
+            </div>
+            
+            <!-- Introduction Section -->
+            <div class="section active" id="intro-section">
+                <h2>Welcome to the Assessment</h2>
+                <p>This survey will help you evaluate how effectively your organisation manages its facilities and assets. It covers five key areas:</p>
+                <ol>
+                    <li>Inventory and Tracking</li>
+                    <li>Maintenance Practices</li>
+                    <li>Space Utilisation</li>
+                    <li>Compliance and Safety</li>
+                    <li>Technology and Automation</li>
+                </ol>
+                <p>The assessment takes about 5 minutes to complete and will provide personalised recommendations to improve your facilities and asset management practices.</p>
+                
+                <h3>Your Contact Information</h3>
+                <p>Please provide your details so we can send you your results. Either email or phone number is required.</p>
+                
+                <div class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" class="form-input" placeholder="Your Name">
+                        <span class="error-message" id="name-error"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" class="form-input" placeholder="your.email@example.com">
+                        <span class="error-message" id="email-error"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" class="form-input" placeholder="04XX XXX XXX">
+                        <span class="error-message" id="phone-error"></span>
+                    </div>
+                    
+                    <div class="error-message" id="contact-error">Please provide either an email address or phone number.</div>
+                </div>
+                
+                <div class="nav-buttons">
+                    <div></div>
+                    <button id="start-btn">Start Assessment</button>
+                </div>
+            </div>
+            
+            <!-- Section 1: Inventory and Tracking -->
+            <div class="section" id="section-1">
+                <h2>Inventory and Tracking</h2>
+                
+                <div class="question-container">
+                    <div class="question">1. How do you track your business assets?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q1" value="1">
+                            <span class="option-text">We don't have a formal tracking system</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="2">
+                            <span class="option-text">We use spreadsheets to track major assets</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="3">
+                            <span class="option-text">We use basic asset management software</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="4">
+                            <span class="option-text">We use a comprehensive asset management system with regular audits</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question-container">
+                    <div class="question">2. How frequently do you update your asset inventory?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q2" value="1">
+                            <span class="option-text">Rarely or only when absolutely necessary</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q2" value="2">
+                            <span class="option-text">Annually</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q2" value="3">
+                            <span class="option-text">Quarterly</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q2" value="4">
+                            <span class="option-text">Monthly or in real-time as changes occur</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question-container">
+                    <div class="question">3. Do you track the lifecycle of your assets (acquisition, depreciation, disposal)?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q3" value="1">
+                            <span class="option-text">No, we don't track asset lifecycle</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q3" value="2">
+                            <span class="option-text">We track basic acquisition and disposal dates</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q3" value="3">
+                            <span class="option-text">We track lifecycle stages but not consistently for all assets</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q3" value="4">
+                            <span class="option-text">We have comprehensive lifecycle tracking for all significant assets</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="nav-buttons">
+                    <button class="back-btn" data-section="intro-section">Back</button>
+                    <button class="next-btn" data-section="section-2">Next</button>
+                </div>
+            </div>
+            
+            <!-- Section 2: Maintenance Practices -->
+            <div class="section" id="section-2">
+                <h2>Maintenance Practices</h2>
+                
+                <div class="question-container">
+                    <div class="question">4. How do you approach equipment and facility maintenance?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q4" value="1">
+                            <span class="option-text">Reactive - we fix things when they break</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q4" value="2">
+                            <span class="option-text">Mostly reactive with some scheduled maintenance for critical equipment</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q4" value="3">
+                            <span class="option-text">Regular preventive maintenance schedule for most assets</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q4" value="4">
+                            <span class="option-text">Comprehensive preventive and predictive maintenance program</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question-container">
+                    <div class="question">5. How do you handle maintenance requests?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q5" value="1">
+                            <span class="option-text">Informal process (verbal, email, etc.)</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q5" value="2">
+                            <span class="option-text">Basic ticketing or form system</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q5" value="3">
+                            <span class="option-text">Formal work order system with prioritization</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q5" value="4">
+                            <span class="option-text">Automated CMMS with tracking, notifications, and analytics</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question-container">
+                    <div class="question">6. Do you track maintenance costs and history?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q6" value="1">
+                            <span class="option-text">No formal tracking of costs or history</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q6" value="2">
+                            <span class="option-text">Basic cost tracking for major repairs</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q6" value="3">
+                            <span class="option-text">Regular tracking of maintenance costs and history</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q6" value="4">
+                            <span class="option-text">Comprehensive tracking with analysis to optimize maintenance strategies</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="nav-buttons">
+                    <button class="back-btn" data-section="section-1">Back</button>
+                    <button class="next-btn" data-section="section-3">Next</button>
+                </div>
+            </div>
+            
+            <!-- Section 3: Space Utilization -->
+            <div class="section" id="section-3">
+                <h2>Space Utilisation</h2>
+                
+                <div class="question-container">
+                    <div class="question">7. How do you monitor and optimise your facility space usage?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q7" value="1">
+                            <span class="option-text">We don't actively monitor space utilisation</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q7" value="2">
+                            <span class="option-text">Basic space assignment with occasional reviews</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q7" value="3">
+                            <span class="option-text">Regular space utilisation assessments with adjustments</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q7" value="4">
+                            <span class="option-text">Data-driven space optimisation with occupancy sensors/analytics</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question-container">
+                    <div class="question">8. Do you have processes for managing workplace changes (moves, additions, changes)?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q8" value="1">
+                            <span class="option-text">Ad-hoc process with minimal documentation</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q8" value="2">
+                            <span class="option-text">Basic process but not consistently followed</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q8" value="3">
+                            <span class="option-text">Documented processes with approvals and checklists</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q8" value="4">
+                            <span class="option-text">Comprehensive change management program with digital tools</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="nav-buttons">
+                    <button class="back-btn" data-section="section-2">Back</button>
+                    <button class="next-btn" data-section="section-4">Next</button>
+                </div>
+            </div>
+            
+            <!-- Section 4: Compliance and Safety -->
+            <div class="section" id="section-4">
+                <h2>Compliance and Safety</h2>
+                
+                <div class="question-container">
+                    <div class="question">9. How do you manage facility-related compliance requirements?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q9" value="1">
+                            <span class="option-text">Minimal awareness of requirements with reactive approach</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q9" value="2">
+                            <span class="option-text">Basic awareness with some scheduled inspections</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q9" value="3">
+                            <span class="option-text">Regular compliance monitoring with documented procedures</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q9" value="4">
+                            <span class="option-text">Comprehensive compliance program with automated tracking and alerts</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question-container">
+                    <div class="question">10. How do you handle safety inspections and hazard management?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q10" value="1">
+                            <span class="option-text">Limited safety program with minimal documentation</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q10" value="2">
+                            <span class="option-text">Basic safety inspections conducted periodically</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q10" value="3">
+                            <span class="option-text">Regular safety program with hazard assessments and training</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q10" value="4">
+                            <span class="option-text">Comprehensive safety program with digital tracking, trend analysis, and continuous improvement</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="nav-buttons">
+                    <button class="back-btn" data-section="section-3">Back</button>
+                    <button class="next-btn" data-section="section-5">Next</button>
+                </div>
+            </div>
+            
+            <!-- Section 5: Technology and Automation -->
+            <div class="section" id="section-5">
+                <h2>Technology and Automation</h2>
+                
+                <div class="question-container">
+                    <div class="question">11. What technology do you use to manage facilities and assets?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q11" value="1">
+                            <span class="option-text">Minimal technology use (paper-based or basic spreadsheets)</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q11" value="2">
+                            <span class="option-text">Basic software tools (spreadsheets, simple databases)</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q11" value="3">
+                            <span class="option-text">Dedicated facility/asset management software</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q11" value="4">
+                            <span class="option-text">Integrated facility management platform with IoT sensors and analytics</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question-container">
+                    <div class="question">12. How do you use data to make facility management decisions?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q12" value="1">
+                            <span class="option-text">Minimal data collection or analysis</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q12" value="2">
+                            <span class="option-text">Basic reporting with some trend analysis</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q12" value="3">
+                            <span class="option-text">Regular data analysis used for planning and improvements</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q12" value="4">
+                            <span class="option-text">Advanced analytics with predictive modelling and dashboards for decision-making</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="nav-buttons">
+                    <button class="back-btn" data-section="section-4">Back</button>
+                    <button id="submit-btn">Submit Assessment</button>
+                </div>
+            </div>
+            
+            <!-- Results Section -->
+            <div class="section" id="results-section">
+                <h2>Your Assessment Results</h2>
+                
+                <div class="score-gauge">
+                    <div class="gauge-bg"></div>
+                    <div class="gauge-fill" id="gauge-fill"></div>
+                    <div class="gauge-center"></div>
+                    <div class="gauge-text" id="gauge-text">0%</div>
+                </div>
+                
+                <div class="score" id="score-text"></div>
+                <div id="score-description"></div>
+                
+                <div class="recommendations">
+                    <h3>Key Recommendations</h3>
+                    <div id="recommendations-list"></div>
+                </div>
+                
+                <div class="contact-summary">
+                    <h3>Your Contact Details</h3>
+                    <p>A copy of these results has been sent to: <span id="contact-info"></span></p>
+                </div>
+                
+                <div class="nav-buttons">
+                    <button id="restart-btn">Restart Assessment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Make sure the page is fully loaded before initializing
+        window.addEventListener('load', function() {
+            // Fix for iframe scrolling issues
+            if (window.self !== window.top) {
+                document.body.style.overflow = 'auto';
+                document.documentElement.style.overflow = 'auto';
+            }
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const sections = document.querySelectorAll('.section');
+            const progressBar = document.getElementById('progress-bar');
+            const progressValue = document.getElementById('progress-value');
+            const startBtn = document.getElementById('start-btn');
+            const submitBtn = document.getElementById('submit-btn');
+            const restartBtn = document.getElementById('restart-btn');
+            const backBtns = document.querySelectorAll('.back-btn');
+            const nextBtns = document.querySelectorAll('.next-btn');
+            const gaugeFill = document.getElementById('gauge-fill');
+            const gaugeText = document.getElementById('gauge-text');
+            const scoreText = document.getElementById('score-text');
+            const scoreDescription = document.getElementById('score-description');
+            const recommendationsList = document.getElementById('recommendations-list');
+            
+            // Variables
+            const totalQuestions = 12;
+            const sectionCount = 6; // Including intro and results
+            let currentSection = 0;
+            let answers = {};
+            let contactInfo = {
+                name: '',
+                email: '',
+                phone: ''
+            };
+            
+            // Initialize
+            updateProgress();
+            document.getElementById('contact-error').style.display = 'none';
+            
+            // Event Listeners
+            startBtn.addEventListener('click', function() {
+                // Validate contact info
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                
+                let isValid = true;
+                
+                // Reset error messages
+                document.getElementById('name-error').style.display = 'none';
+                document.getElementById('email-error').style.display = 'none';
+                document.getElementById('phone-error').style.display = 'none';
+                document.getElementById('contact-error').style.display = 'none';
+                
+                // Validate name
+                if (!name) {
+                    document.getElementById('name-error').textContent = 'Please enter your name';
+                    document.getElementById('name-error').style.display = 'block';
+                    isValid = false;
+                }
+                
+                // Email validation
+                if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    document.getElementById('email-error').textContent = 'Please enter a valid email address';
+                    document.getElementById('email-error').style.display = 'block';
+                    isValid = false;
+                }
+                
+                // Phone validation - Australian format
+                if (phone && !/^(?:\+?61|0)[2-478](?:[ -]?[0-9]){8}$/.test(phone.replace(/\s+/g, ''))) {
+                    document.getElementById('phone-error').textContent = 'Please enter a valid Australian phone number';
+                    document.getElementById('phone-error').style.display = 'block';
+                    isValid = false;
+                }
+                
+                // Either email or phone must be provided
+                if (!email && !phone) {
+                    document.getElementById('contact-error').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (isValid) {
+                    contactInfo.name = name;
+                    contactInfo.email = email;
+                    contactInfo.phone = phone;
+                    showSection('section-1');
+                }
+            });
+            
+            submitBtn.addEventListener('click', function(event) {
+                // Prevent default form submission behavior
+                event.preventDefault();
+                
+                // FIXED: Improved answer collection to ensure we get all responses
+                const collectedAnswers = {};
+                document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+                    const questionNumber = radio.name.substring(1);
+                    collectedAnswers[questionNumber] = parseInt(radio.value);
+                });
+                
+                // Update our answers object with collected values
+                answers = {...collectedAnswers};
+                
+                // Log for debugging
+                console.log("Collected answers:", answers);
+                console.log("Total questions answered:", Object.keys(answers).length);
+                
+                // Check if all questions are answered
+                const answeredQuestions = Object.keys(answers).length;
+                if (answeredQuestions < totalQuestions) {
+                    alert(`Please answer all questions. You've answered ${answeredQuestions} out of ${totalQuestions}.`);
+                    return;
+                }
+                
+                calculateResults();
+                showSection('results-section');
+                
+                // Send a message to the parent window that the form was submitted
+                try {
+                    if (window.parent) {
+                        window.parent.postMessage({
+                            type: 'surveySubmitted',
+                            score: Math.round((Object.values(answers).reduce((a, b) => a + b, 0) / (totalQuestions * 4)) * 100),
+                            answers: answers,
+                            contactInfo: contactInfo
+                        }, '*');
+                    }
+                } catch (e) {
+                    console.log('Could not communicate with parent frame:', e);
+                }
+            });
+            
+            restartBtn.addEventListener('click', function() {
+                resetSurvey();
+                showSection('intro-section');
+            });
+            
+            backBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetSection = this.getAttribute('data-section');
+                    showSection(targetSection);
+                });
+            });
+            
+            nextBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetSection = this.getAttribute('data-section');
+                    showSection(targetSection);
+                });
+            });
+            
+        // Set up radio button event listeners
+            document.addEventListener('change', function(e) {
+                if (e.target && e.target.type === 'radio') {
+                    const questionNumber = e.target.name.substring(1);
+                    const value = parseInt(e.target.value);
+                    
+                    // Store the answer immediately
+                    answers[questionNumber] = value;
+                    
+                    // Log for debugging
+                    console.log(`Question ${questionNumber} answered: ${value}`);
+                    console.log("Current answers:", answers);
+                    
+                    updateProgress();
+                }
+            });
+            
+            // Functions
+            function showSection(sectionId) {
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(sectionId).classList.add('active');
+                
+                // Update current section for progress
+                const sectionIndex = Array.from(sections).findIndex(section => section.id === sectionId);
+                if (sectionIndex !== -1) {
+                    currentSection = sectionIndex;
+                    updateProgress();
+                }
+            }
+            
+            function updateProgress() {
+                const answeredQuestions = Object.keys(answers).length;
+                let progressPercentage = 0;
+                
+                if (currentSection === 0) {
+                    progressPercentage = 0;
+                } else if (currentSection === sectionCount - 1) {
+                    progressPercentage = 100;
+                } else {
+                    const sectionsProgress = (currentSection - 1) / (sectionCount - 2);
+                    const questionsInCurrentSection = document.querySelectorAll(`#section-${currentSection} input[type="radio"]:checked`).length;
+                    const totalQuestionsInCurrentSection = document.querySelectorAll(`#section-${currentSection} .question`).length;
+                    
+                    const questionProgress = totalQuestionsInCurrentSection > 0 ? 
+                                           questionsInCurrentSection / totalQuestionsInCurrentSection : 0;
+                    
+                    progressPercentage = ((sectionsProgress + (questionProgress / (sectionCount - 2))) * 100).toFixed(0);
+                }
+                
+                progressBar.style.width = `${progressPercentage}%`;
+                progressValue.textContent = `${progressPercentage}%`;
+            }
+            
+            function calculateResults() {
+                // Calculate score (out of 100)
+                let totalScore = 0;
+                for (const question in answers) {
+                    totalScore += answers[question];
+                }
+                
+                // Max possible score is 4 points per question
+                const maxScore = totalQuestions * 4;
+                const scorePercentage = Math.round((totalScore / maxScore) * 100);
+                
+                // Update gauge
+                const gaugeRotation = (scorePercentage / 100) * 180;
+                gaugeFill.style.transform = `rotate(${gaugeRotation}deg)`;
+                gaugeText.textContent = `${scorePercentage}%`;
+                
+                // Set gauge color based on score
+                if (scorePercentage < 40) {
+                    gaugeFill.style.backgroundColor = '#FF5252'; // Red
+                } else if (scorePercentage < 60) {
+                    gaugeFill.style.backgroundColor = '#FFC107'; // Yellow
+                } else if (scorePercentage < 80) {
+                    gaugeFill.style.backgroundColor = '#4CAF50'; // Green
+                } else {
+                    gaugeFill.style.backgroundColor = '#2E7D32'; // Dark Green
+                }
+                
+                // Update score text and description
+                let assessmentLevel = '';
+                let description = '';
+                
+                if (scorePercentage < 40) {
+                    assessmentLevel = 'Basic';
+                    description = 'Your facilities and asset management practices are at a foundational level. Significant improvements can be made to increase efficiency and reduce costs.';
+                } else if (scorePercentage < 60) {
+                    assessmentLevel = 'Developing';
+                    description = 'You have established some good practices but there are opportunities to enhance your approach to facilities and asset management.';
+                } else if (scorePercentage < 80) {
+                    assessmentLevel = 'Advanced';
+                    description = 'You have a mature facilities and asset management system in place with good processes and technology support.';
+                } else {
+                    assessmentLevel = 'Optimized';
+                    description = 'Excellent! Your facilities and asset management practices are sophisticated and data-driven, positioning your organization as a leader in this area.';
+                }
+                
+                scoreText.textContent = `${assessmentLevel} (${scorePercentage}%)`;
+                scoreDescription.textContent = description;
+                
+                // Generate recommendations
+                generateRecommendations();
+            }
+            
+            function generateRecommendations() {
+                const recommendations = [];
+                
+                // FIXED: Make this function more resilient
+                // If we don't have enough data, use sensible defaults
+                if (Object.keys(answers).length < totalQuestions) {
+                    console.log("Warning: Generating recommendations with incomplete data");
+                    // Add default recommendations
+                    recommendations.push({
+                        area: 'Inventory and Tracking',
+                        recommendation: 'Consider implementing a more robust asset tracking system with regular audits and lifecycle management.'
+                    });
+                    recommendations.push({
+                        area: 'Maintenance Practices',
+                        recommendation: 'Establish a preventive maintenance schedule and implement a formal work order system to track maintenance history.'
+                    });
+                    recommendations.push({
+                        area: 'Space Utilisation',
+                        recommendation: 'Develop a structured approach to space management with regular utilisation reviews and optimisation strategies.'
+                    });
+                    
+                    // Display recommendations
+                    recommendationsList.innerHTML = '';
+                    recommendations.forEach(rec => {
+                        const recItem = document.createElement('div');
+                        recItem.innerHTML = `<h4>${rec.area}</h4><p>${rec.recommendation}</p>`;
+                        recommendationsList.appendChild(recItem);
+                    });
+                    
+                    return;
+                }
+                
+                try {
+                    // Check inventory and tracking
+                    const inventoryAvg = (answers[1] + answers[2] + answers[3]) / 3;
+                if (inventoryAvg < 3) {
+                    recommendations.push({
+                        area: 'Inventory and Tracking',
+                        recommendation: 'Implement a more robust asset tracking system that includes regular audits and lifecycle management. Consider using barcode or RFID technology for accurate tracking.'
+                    });
+                }
+                
+                // Check maintenance practices
+                const maintenanceAvg = (answers[4] + answers[5] + answers[6]) / 3;
+                if (maintenanceAvg < 3) {
+                    recommendations.push({
+                        area: 'Maintenance Practices',
+                        recommendation: 'Move from reactive to preventive maintenance by implementing a formal maintenance schedule and work order system. Track maintenance history to identify recurring issues and optimise maintenance intervals.'
+                    });
+                }
+                
+                // Check space utilization
+                const spaceAvg = (answers[7] + answers[8]) / 2;
+                if (spaceAvg < 3) {
+                    recommendations.push({
+                        area: 'Space Utilisation',
+                        recommendation: 'Develop a more structured approach to space management with regular utilisation reviews. Consider implementing space management software to optimise layout and track occupancy.'
+                    });
+                }
+                
+                // Check compliance and safety
+                const complianceAvg = (answers[9] + answers[10]) / 2;
+                if (complianceAvg < 3) {
+                    recommendations.push({
+                        area: 'Compliance and Safety',
+                        recommendation: 'Strengthen your compliance program with regular audits and documented procedures. Create a centralised system for tracking compliance requirements and inspection schedules.'
+                    });
+                }
+                
+                // Check technology usage
+                const techAvg = (answers[11] + answers[12]) / 2;
+                if (techAvg < 3) {
+                    recommendations.push({
+                        area: 'Technology and Automation',
+                        recommendation: 'Invest in specialised facility management software to centralise data and automate processes. Consider IoT sensors for real-time monitoring of critical equipment and spaces.'
+                    });
+                }
+                
+                // Add general recommendation if overall score is low
+                if ((inventoryAvg + maintenanceAvg + spaceAvg + complianceAvg + techAvg) / 5 < 2.5) {
+                    recommendations.push({
+                        area: 'Overall Strategy',
+                        recommendation: 'Develop a strategic facilities and asset management plan with clear objectives, timelines, and budget. Consider hiring or training dedicated facilities management personnel.'
+                    });
+                }
+                
+                // Display recommendations
+                recommendationsList.innerHTML = '';
+                recommendations.forEach(rec => {
+                    const recItem = document.createElement('div');
+                    recItem.innerHTML = `<h4>${rec.area}</h4><p>${rec.recommendation}</p>`;
+                    recommendationsList.appendChild(recItem);
+                });
+                } catch (e) {
+                    console.error("Error generating recommendations:", e);
+                    // Fallback recommendations
+                    recommendationsList.innerHTML = `
+                        <div><h4>Inventory and Tracking</h4><p>Implement a robust asset tracking system with regular audits and lifecycle management.</p></div>
+                        <div><h4>Maintenance Practices</h4><p>Develop a preventive maintenance program with formal work order system.</p></div>
+                        <div><h4>Technology Utilisation</h4><p>Consider investing in specialised facility management software to centralise data.</p></div>
+                    `;
+                }
+            }
+            
+            function resetSurvey() {
+                // Clear all answers
+                answers = {};
+                
+                // Uncheck all radio buttons
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.checked = false;
+                });
+                
+                // Reset progress
+                currentSection = 0;
+                updateProgress();
+            }
+        });
+        
+        // Make buttons more robust for iframe environments
+        document.addEventListener('click', function(e) {
+            // Find if a button was clicked or a parent of the clicked element is a button
+            let targetElement = e.target;
+            while (targetElement != null) {
+                if (targetElement.id === 'submit-btn') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Check if all questions are answered
+                    const answers = {};
+                    document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+                        const questionNumber = radio.name.substring(1);
+                        answers[questionNumber] = parseInt(radio.value);
+                    });
+                    
+                    const answeredQuestions = Object.keys(answers).length;
+                    const totalQuestions = 12;
+                    
+                    if (answeredQuestions < totalQuestions) {
+                        alert(`Please answer all questions. You've answered ${answeredQuestions} out of ${totalQuestions}.`);
+                        return;
+                    }
+                    
+                    // Show results section
+                    document.querySelectorAll('.section').forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    document.getElementById('results-section').classList.add('active');
+                    
+                    // Calculate and display results
+                    window.calculateResults = window.calculateResults || function() {
+                        // If the original function failed, this is a fallback
+                        const scoreText = document.getElementById('score-text');
+                        const scoreDescription = document.getElementById('score-description');
+                        if (scoreText) scoreText.textContent = "Results calculated successfully";
+                        if (scoreDescription) scoreDescription.textContent = "Please see recommendations below.";
+                    };
+                    
+                    try {
+                        window.calculateResults();
+                    } catch (err) {
+                        console.error("Error calculating results:", err);
+                    }
+                    
+                    return;
+                }
+                
+                targetElement = targetElement.parentElement;
+            }
+        }, true);
+    </script>
+</body>
+</html>
